@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidmar-Toy - Tienda de Juguetes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#FEF9C3',       /* Fondo amarillo suave */
+                            red: '#DC2626',      /* Rojo bordes y acentos */
+                            green: '#16A34A',    /* Fondo de títulos */
+                            greenDark: '#15803D',
+                            yellow: '#FACC15',   /* Amarillo vibrante */
+                        }
+                    },
+                    keyframes: {
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(-3%)' },
+                            '50%': { transform: 'translateY(0)' },
+                        },
+                        popIn: {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        'bounce-soft': 'bounceSoft 3s infinite ease-in-out',
+                        'pop-in': 'popIn 0.2s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FEF9C3;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Estilos personalizados para cumplir la consigna de bordes rojos y fondo verde en títulos */
+        .border-red-custom {
+            border: 3px solid #DC2626;
+        }
+        .title-green-bg {
+            background-color: #16A34A;
+            color: #FFFFFF;
+            padding: 0.5rem 1.25rem;
+            border-radius: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen selection:bg-red-500 selection:text-white">
+
+    <header class="sticky top-0 z-40 bg-yellow-300 backdrop-blur-md shadow-md border-b-4 border-brand-red">
+        <!-- Banner superior -->
+        <div class="bg-brand-red text-white text-xs md:text-sm font-semibold py-1.5 px-4 text-center">
+            🚀 ¡Bienvenidos a <span class="font-bold underline">Sidmar-Toy</span>! Envío GRATIS en compras mayores a $50 con el cupón <span class="bg-yellow-300 text-brand-red px-2 py-0.5 rounded-full font-bold ml-1">SIDMAR2026</span>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo Sidmar-Toy -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-brand-green rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-md border-2 border-brand-red">
+                        <i data-lucide="gamepad-2" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <span class="font-title text-3xl font-extrabold text-brand-red tracking-wide drop-shadow-sm">
+                        Sidmar-Toy
+                    </span>
+                </a>
+
+                <!-- Buscador en tiempo real -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+                    <input type="text" id="searchInput" placeholder="Buscar juguetes..." 
+                        class="w-full pl-11 pr-4 py-2.5 rounded-full bg-white border-2 border-brand-red focus:outline-none focus:ring-2 focus:ring-brand-green transition-all duration-200 text-sm shadow-inner">
+                    <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                </div>
+
+                <!-- Botones de Acción (Favoritos y Carrito) -->
+                <div class="flex items-center gap-3">
+                    <!-- Wishlist Btn -->
+                    <button id="openWishlistBtn" class="relative p-2.5 rounded-2xl bg-white border-2 border-brand-red hover:bg-red-50 text-brand-red transition-colors shadow-sm">
+                        <i data-lucide="heart" class="w-6 h-6"></i>
+                        <span id="wishlistCount" class="absolute -top-1 -right-1 bg-brand-green text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
+                    </button>
+
+                    <!-- Cart Btn -->
+                    <button id="openCartBtn" class="relative flex items-center gap-2 bg-brand-green hover:bg-green-700 text-white font-bold px-4 py-2.5 rounded-2xl transition-all shadow-md active:scale-95 border-2 border-brand-red">
+                        <div class="relative">
+                            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                            <span id="cartCount" class="absolute -top-2 -right-2 bg-brand-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                        </div>
+                        <span class="hidden sm:inline font-title text-base" id="cartTotalNav">$0.00</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Buscador Móvil -->
+            <div class="pb-3 md:hidden">
+                <div class="relative">
+                    <input type="text" id="searchInputMobile" placeholder="Buscar en Sidmar-Toy..." 
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-white border-2 border-brand-red text-sm">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white border-b-4 border-brand-red shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-center gap-2 md:gap-4 font-title font-bold">
+        <a href="index.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🏠 Inicio / Catálogo</a>
+        <a href="ofertas.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🎁 Ofertas</a>
+        <a href="nosotros.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🧸 Nosotros</a>
+        <a href="consejos.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">💡 Consejos</a>
+        <a href="contacto.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">📩 Contacto</a>
+      </div>
+    </nav>
+
+    <section class="relative overflow-hidden bg-yellow-200 py-10 lg:py-14 border-b-4 border-brand-red">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="text-center lg:text-left space-y-5">
+                    <div class="title-green-bg text-sm font-bold uppercase tracking-wide">
+                        ✨ ¡Bienvenido al mundo del juego!
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+                        Explora la diversión en <span class="text-brand-red">Sidmar-Toy</span>
+                    </h1>
+                    <p class="text-slate-700 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-medium">
+                        Juguetes diseñados para estimular la creatividad, el aprendizaje y la motricidad de los niños.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                        <a href="#catalogo" class="bg-brand-red hover:bg-red-700 text-white font-title text-lg px-7 py-3.5 rounded-2xl shadow-lg transition-all flex items-center gap-2 active:scale-95 border-2 border-white">
+                            Ver Catálogo Especial <i data-lucide="arrow-down-circle" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative flex justify-center">
+                    <div class="relative w-full max-w-md bg-white p-4 rounded-3xl shadow-xl border-4 border-brand-red transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                        <div class="relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-yellow-100 flex items-center justify-center border-2 border-brand-red">
+                            <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Sidmar Toy Promoción" 
+                                 class="w-full h-full object-cover animate-bounce-soft">
+                        </div>
+                        <div class="pt-4 text-center">
+                            <span class="title-green-bg font-title text-lg font-bold">¡Lo mejor para aprender jugando!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b-4 border-brand-red pb-6">
+            <div>
+                <h2 class="title-green-bg text-2xl md:text-3xl font-bold flex items-center gap-3">
+                    <i data-lucide="toy-brick"></i> Catálogo de Juguetes Sidmar-Toy
+                </h2>
+                <p class="text-slate-700 text-sm mt-2 font-medium">Haz clic en cada categoría para explorar los juguetes especiales.</p>
+            </div>
+
+            <div class="flex items-center gap-2 self-end md:self-auto">
+                <label for="sortBy" class="text-sm font-bold text-slate-800 whitespace-nowrap">Ordenar por:</label>
+                <select id="sortBy" class="bg-white border-2 border-brand-red text-slate-800 text-sm font-medium rounded-xl px-3 py-2 focus:outline-none">
+                    <option value="featured">Destacados</option>
+                    <option value="price-low">Precio: Menor a Mayor</option>
+                    <option value="price-high">Precio: Mayor a Menor</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar Filtros Categorías -->
+            <aside class="space-y-6 bg-white p-6 rounded-3xl shadow-md border-4 border-brand-red h-fit">
+                <div>
+                    <h3 class="title-green-bg text-lg font-bold w-full text-center mb-4 flex items-center justify-center gap-2">
+                        <i data-lucide="layout-grid" class="w-5 h-5"></i> Categorías
+                    </h3>
+                    <div class="space-y-2.5" id="categoryFilters"></div>
+                </div>
+            </aside>
+
+            <!-- Grilla de productos -->
+            <div class="lg:col-span-3">
+                <div class="mb-4 text-sm font-bold text-slate-700 flex justify-between items-center">
+                    <span id="productCount">Cargando productos Sidmar-Toy...</span>
+                </div>
+
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+
+                <div id="noResults" class="hidden text-center py-16 bg-white rounded-3xl border-4 border-brand-red">
+                    <div class="w-20 h-20 bg-red-100 text-brand-red rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-brand-red">
+                        <i data-lucide="frown" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="title-green-bg text-xl font-bold mb-2">Sin resultados</h3>
+                    <p class="text-slate-600 text-sm max-w-sm mx-auto">No se encontraron juguetes para la búsqueda seleccionada.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-opacity duration-300 opacity-0">
+        <div id="cartBackdrop" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity cursor-pointer"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-yellow-100 shadow-2xl flex flex-col pointer-events-auto border-l-8 border-brand-red transform translate-x-full transition-transform duration-300 ease-in-out" id="cartPanel">
+                
+                <div class="p-6 bg-brand-green text-white flex items-center justify-between border-b-4 border-brand-red">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+                        <h3 class="font-title text-2xl font-bold">Carrito Sidmar-Toy</h3>
+                    </div>
+                    <button id="closeCartBtn" class="p-2 rounded-full text-white hover:bg-green-700 transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cartItemsContainer"></div>
+
+                <div class="p-6 bg-white border-t-4 border-brand-red space-y-4">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-slate-700 font-semibold">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-brand-green font-bold">
+                            <span>Envío</span>
+                            <span>GRATIS</span>
+                        </div>
+                        <div class="flex justify-between text-slate-900 text-xl font-bold pt-2 border-t border-slate-200">
+                            <span>Total</span>
+                            <span id="cartTotal" class="text-brand-red font-title">$0.00</span>
+                        </div>
+                    </div>
+
+                    <button id="checkoutBtn" class="w-full bg-brand-green hover:bg-green-700 text-white font-title text-xl py-3.5 rounded-2xl shadow-md border-2 border-brand-red transition-all flex items-center justify-center gap-2 active:scale-95">
+                        <i data-lucide="credit-card" class="w-6 h-6"></i> Comprar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden animate-pop-in">
+        <div class="bg-yellow-50 rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl border-4 border-brand-red max-h-[90vh] overflow-y-auto">
+            <button id="closeModalBtn" class="absolute top-4 right-4 p-2 text-white bg-brand-red rounded-full hover:bg-red-700 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden animate-pop-in">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center relative shadow-2xl border-4 border-brand-red">
+            <div class="w-20 h-20 bg-green-100 text-brand-green rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-brand-green">
+                <i data-lucide="check-circle-2" class="w-12 h-12"></i>
+            </div>
+            <h3 class="title-green-bg text-2xl font-bold mb-3">¡Gracias por tu compra!</h3>
+            <p class="text-slate-700 text-sm mb-6 font-medium">Tu pedido en Sidmar-Toy se ha procesado con éxito.</p>
+            <button id="closeCheckoutModalBtn" class="w-full bg-brand-red hover:bg-red-700 text-white font-title text-lg py-3 rounded-2xl border-2 border-slate-900 transition-colors">
+                Seguir Comprando
+            </button>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <footer class="bg-brand-green text-white pt-10 pb-6 border-t-8 border-brand-red">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex items-center justify-center gap-2">
+                <div class="w-10 h-10 bg-yellow-300 rounded-xl flex items-center justify-center border-2 border-brand-red">
+                    <i data-lucide="gamepad-2" class="w-6 h-6 text-brand-red"></i>
+                </div>
+                <span class="font-title text-3xl font-bold text-white">Sidmar-Toy</span>
+            </div>
+            <p class="text-yellow-200 text-sm max-w-md mx-auto font-medium">
+                Tu tienda de juguetes favorita con productos educativos, de motricidad, construcción y estimulación sensorial.
+            </p>
+            <div class="pt-4 border-t border-green-700 text-xs text-yellow-100">
+                © 2026 Sidmar-Toy. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Productos requeridos en la consigna
+        const products = [
+            {
+                id: 1,
+                name: "Guitarra Musical de Madera",
+                category: "JUGUETES educativos y didaticos",
+                price: 24.99,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+                badge: "Educativo",
+                description: "Guitarra acustica infantil de madera ideal para desarrollar la sensibilidad musical, el ritmo y la exploracion didactica en los niños."
+            },
+            {
+                id: 2,
+                name: "Teléfono Musical Marrón Retro",
+                category: "JUGUETES simbolicos y de imitacion",
+                price: 18.50,
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1520923642038-b4259acecbd7?auto=format&fit=crop&w=600&q=80",
+                badge: "Simbólico",
+                description: "Teléfono clásico interactivo en tono marrón con melodías y sonidos que incentivan el juego de rol y la comunicación simbólica."
+            },
+            {
+                id: 3,
+                name: "Delfín Móvil Balancín con Péndulo",
+                category: "JUGUETES DE motricidad y movimiento",
+                price: 22.00,
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?auto=format&fit=crop&w=600&q=80",
+                badge: "Motricidad",
+                description: "Delfín articulado con sistema de péndulo y balancín que promueve el desarrollo visual, la coordinación motriz y el movimiento."
+            },
+            {
+                id: 4,
+                name: "Lego Speed Champions: Rayo Mcqueen",
+                category: "JUGUETES DE construccion y creatividad",
+                price: 35.00,
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&w=600&q=80",
+                badge: "Construcción",
+                description: "Set de construcción LEGO oficial de Rayo McQueen para potenciar la concentración, creatividad y destreza fina armando bloques."
+            },
+            {
+                id: 5,
+                name: "Bola Anti Estrés Squishy Mesh Ball Relajante",
+                category: "JUGUETES DE ESTIMULACION SENSORIAL",
+                price: 8.99,
+                rating: 4.6,
+                image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
+                badge: "Sensorial",
+                description: "Pelota maleable tipo Squishy con red de malla (Mesh Ball) perfecta para la autorregulación emocional y estimulación sensorial."
+            }
+        ];
+
+        const categories = [
+            "Todos",
+            "JUGUETES educativos y didaticos",
+            "JUGUETES simbolicos y de imitacion",
+            "JUGUETES DE motricidad y movimiento",
+            "JUGUETES DE construccion y creatividad",
+            "JUGUETES DE ESTIMULACION SENSORIAL"
+        ];
+
+        // State
+        let cart = [];
+        let wishlist = new Set();
+        let selectedCategory = "Todos";
+        let searchQuery = "";
+        let currentSort = "featured";
+
+        // DOM Elements
+        let productsGrid, productCount, noResults, categoryFiltersContainer;
+        let searchInput, searchInputMobile, sortBySelect;
+        let cartDrawer, cartPanel, cartBackdrop, openCartBtn, closeCartBtn;
+        let cartItemsContainer, cartCount, cartTotalNav, cartSubtotal, cartTotal;
+        let checkoutBtn, wishlistCount, productModal, modalContent, closeModalBtn;
+        let checkoutModal, closeCheckoutModalBtn;
+
+        function initDOMReferences() {
+            productsGrid = document.getElementById('productsGrid');
+            productCount = document.getElementById('productCount');
+            noResults = document.getElementById('noResults');
+            categoryFiltersContainer = document.getElementById('categoryFilters');
+            searchInput = document.getElementById('searchInput');
+            searchInputMobile = document.getElementById('searchInputMobile');
+            sortBySelect = document.getElementById('sortBy');
+            cartDrawer = document.getElementById('cartDrawer');
+            cartPanel = document.getElementById('cartPanel');
+            cartBackdrop = document.getElementById('cartBackdrop');
+            openCartBtn = document.getElementById('openCartBtn');
+            closeCartBtn = document.getElementById('closeCartBtn');
+            cartItemsContainer = document.getElementById('cartItemsContainer');
+            cartCount = document.getElementById('cartCount');
+            cartTotalNav = document.getElementById('cartTotalNav');
+            cartSubtotal = document.getElementById('cartSubtotal');
+            cartTotal = document.getElementById('cartTotal');
+            checkoutBtn = document.getElementById('checkoutBtn');
+            wishlistCount = document.getElementById('wishlistCount');
+            productModal = document.getElementById('productModal');
+            modalContent = document.getElementById('modalContent');
+            closeModalBtn = document.getElementById('closeModalBtn');
+            checkoutModal = document.getElementById('checkoutModal');
+            closeCheckoutModalBtn = document.getElementById('closeCheckoutModalBtn');
+        }
+
+        function renderCategoryFilters() {
+            if (!categoryFiltersContainer) return;
+            categoryFiltersContainer.innerHTML = categories.map(cat => {
+                const isSelected = selectedCategory === cat;
+                return `
+                <button 
+                    onclick="setCategory('${cat}')"
+                    class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all border-2 border-brand-red flex items-center justify-between ${
+                        isSelected 
+                        ? 'bg-brand-red text-white shadow-md' 
+                        : 'bg-yellow-100 text-slate-800 hover:bg-yellow-200'
+                    }">
+                    <span class="leading-tight">${cat}</span>
+                    ${isSelected ? '<i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0 ml-1"></i>' : ''}
+                </button>`;
+            }).join('');
+        }
+
+        function getFilteredProducts() {
+            return products.filter(p => {
+                if (selectedCategory !== "Todos" && p.category !== selectedCategory) return false;
+                if (searchQuery.trim() !== "") {
+                    const query = searchQuery.toLowerCase();
+                    if (!p.name.toLowerCase().includes(query) && !p.description.toLowerCase().includes(query)) return false;
+                }
+                return true;
+            }).sort((a, b) => {
+                if (currentSort === 'price-low') return a.price - b.price;
+                if (currentSort === 'price-high') return b.price - a.price;
+                return a.id - b.id;
+            });
+        }
+
+        function renderProducts() {
+            const filtered = getFilteredProducts();
+            if (productCount) productCount.textContent = `Mostrando ${filtered.length} juguete(s) en Sidmar-Toy`;
+
+            if (filtered.length === 0) {
+                if (productsGrid) productsGrid.innerHTML = '';
+                if (noResults) noResults.classList.remove('hidden');
+            } else {
+                if (noResults) noResults.classList.add('hidden');
+                if (productsGrid) {
+                    productsGrid.innerHTML = filtered.map(p => {
+                        const isWishlisted = wishlist.has(p.id);
+                        return `
+                        <div class="bg-white rounded-3xl p-4 shadow-md hover:shadow-xl border-4 border-brand-red transition-all duration-300 flex flex-col justify-between relative group">
+                            <span class="absolute top-6 left-6 z-10 bg-brand-green text-white font-title text-xs font-bold px-3 py-1 rounded-full shadow-md border border-white">
+                                ${p.badge}
+                            </span>
+
+                            <button onclick="toggleWishlist(${p.id})" class="absolute top-6 right-6 z-10 p-2.5 rounded-full bg-white shadow-md text-brand-red border-2 border-brand-red hover:scale-110 transition-all">
+                                <i data-lucide="heart" class="w-5 h-5 ${isWishlisted ? 'fill-brand-red' : ''}"></i>
+                            </button>
+
+                            <div onclick="openModal(${p.id})" class="relative h-48 sm:h-52 rounded-2xl overflow-hidden bg-yellow-100 cursor-pointer mb-4 border-2 border-brand-red">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+
+                            <div class="space-y-3 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider block mb-1">
+                                        ${p.category}
+                                    </span>
+                                    <h3 onclick="openModal(${p.id})" class="font-title text-lg font-bold text-slate-900 hover:text-brand-red transition-colors cursor-pointer leading-snug">
+                                        ${p.name}
+                                    </h3>
+                                </div>
+
+                                <div class="pt-3 border-t-2 border-slate-100 flex items-center justify-between mt-auto">
+                                    <div class="font-title text-2xl font-black text-brand-red">
+                                        $${p.price.toFixed(2)}
+                                    </div>
+                                    <button onclick="addToCart(${p.id})" class="bg-brand-green hover:bg-green-700 text-white font-title font-bold px-4 py-2 rounded-xl border-2 border-slate-900 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Añadir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCartUI();
+            showToast(`¡${product.name} agregado al carrito!`);
+        }
+
+        function updateCartQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            updateCartUI();
+            showToast("Producto eliminado del carrito");
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            if (cartCount) cartCount.textContent = totalItems;
+            if (cartTotalNav) cartTotalNav.textContent = `$${totalAmount.toFixed(2)}`;
+            if (cartSubtotal) cartSubtotal.textContent = `$${totalAmount.toFixed(2)}`;
+            if (cartTotal) cartTotal.textContent = `$${totalAmount.toFixed(2)}`;
+
+            if (cartItemsContainer) {
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = `
+                        <div class="text-center py-12 text-slate-500">
+                            <i data-lucide="shopping-bag" class="w-16 h-16 mx-auto mb-3 text-slate-400"></i>
+                            <p class="font-title text-lg font-bold text-slate-700">Tu carrito en Sidmar-Toy está vacío</p>
+                        </div>`;
+                } else {
+                    cartItemsContainer.innerHTML = cart.map(item => `
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border-2 border-brand-red shadow-sm">
+                            <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover border border-slate-200">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-title text-sm font-bold text-slate-800 truncate">${item.name}</h4>
+                                <p class="text-xs text-brand-red font-bold">$${item.price.toFixed(2)} c/u</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <button onclick="updateCartQuantity(${item.id}, -1)" class="w-6 h-6 rounded-lg bg-yellow-200 border border-slate-400 flex items-center justify-center font-bold text-slate-800">-</button>
+                                    <span class="text-xs font-bold text-slate-800 w-4 text-center">${item.quantity}</span>
+                                    <button onclick="updateCartQuantity(${item.id}, 1)" class="w-6 h-6 rounded-lg bg-yellow-200 border border-slate-400 flex items-center justify-center font-bold text-slate-800">+</button>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-title text-sm font-bold text-slate-900">$${(item.price * item.quantity).toFixed(2)}</p>
+                                <button onclick="removeFromCart(${item.id})" class="text-xs text-brand-red font-bold hover:underline mt-1">Eliminar</button>
+                            </div>
+                        </div>`).join('');
+                }
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function toggleWishlist(productId) {
+            if (wishlist.has(productId)) {
+                wishlist.delete(productId);
+                showToast("Eliminado de favoritos");
+            } else {
+                wishlist.add(productId);
+                showToast("¡Añadido a tus favoritos! ❤️");
+            }
+            if (wishlistCount) {
+                wishlistCount.textContent = wishlist.size;
+                wishlistCount.classList.toggle('hidden', wishlist.size === 0);
+            }
+            renderProducts();
+        }
+
+        function openModal(productId) {
+            const p = products.find(prod => prod.id === productId);
+            if (!p || !modalContent || !productModal) return;
+
+            modalContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="h-64 rounded-2xl overflow-hidden bg-yellow-100 border-2 border-brand-red">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-4">
+                        <span class="title-green-bg text-xs font-bold uppercase">${p.category}</span>
+                        <h3 class="font-title text-2xl font-bold text-slate-900">${p.name}</h3>
+                        <p class="text-slate-700 text-sm leading-relaxed font-medium">${p.description}</p>
+                        <div class="text-3xl font-title font-extrabold text-brand-red">$${p.price.toFixed(2)}</div>
+                        <button onclick="addToCart(${p.id}); closeModal();" class="w-full bg-brand-green hover:bg-green-700 text-white font-title text-lg font-bold py-3 rounded-2xl shadow-md border-2 border-slate-900 transition-all">
+                            Agregar al Carrito Sidmar-Toy
+                        </button>
+                    </div>
+                </div>`;
+            productModal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeModal() {
+            if (productModal) productModal.classList.add('hidden');
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-brand-red text-white flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-sm font-bold border-2 border-white';
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function setupEventListeners() {
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderProducts();
+                });
+            }
+            if (searchInputMobile) {
+                searchInputMobile.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderProducts();
+                });
+            }
+
+            if (sortBySelect) {
+                sortBySelect.addEventListener('change', (e) => {
+                    currentSort = e.target.value;
+                    renderProducts();
+                });
+            }
+
+            if (openCartBtn && cartDrawer && cartPanel) {
+                openCartBtn.addEventListener('click', () => {
+                    cartDrawer.classList.remove('pointer-events-none', 'opacity-0');
+                    cartPanel.classList.remove('translate-x-full');
+                });
+            }
+
+            const closeCart = () => {
+                if (cartPanel && cartDrawer) {
+                    cartPanel.classList.add('translate-x-full');
+                    cartDrawer.classList.add('opacity-0');
+                    setTimeout(() => cartDrawer.classList.add('pointer-events-none'), 300);
+                }
+            };
+
+            if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+            if (cartBackdrop) cartBackdrop.addEventListener('click', closeCart);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', () => {
+                    if (cart.length === 0) {
+                        showToast("El carrito está vacío");
+                        return;
+                    }
+                    if (window.confetti) {
+                        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+                    }
+                    closeCart();
+                    if (checkoutModal) checkoutModal.classList.remove('hidden');
+                    cart = [];
+                    updateCartUI();
+                });
+            }
+
+            if (closeCheckoutModalBtn && checkoutModal) {
+                closeCheckoutModalBtn.addEventListener('click', () => {
+                    checkoutModal.classList.add('hidden');
+                });
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initDOMReferences();
+            renderCategoryFilters();
+            renderProducts();
+            setupEventListeners();
+            if (window.lucide) lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosotros | Sidmar-Toy</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {theme: {extend: {fontFamily: {fredoka: ['Fredoka','sans-serif'], sans: ['Inter','sans-serif']}, colors: {brand: {bg:'#FEF9C3',red:'#DC2626',green:'#16A34A',greenDark:'#15803D',yellow:'#FACC15'}}}}};
+</script>
+<style>
+body {background:#FEF9C3;font-family:Inter,sans-serif}
+h1,h2,h3,h4,.font-title {font-family:Fredoka,sans-serif}
+.title-green-bg {background:#16A34A;color:white;padding:.5rem 1.25rem;border-radius:1rem;display:inline-block;box-shadow:0 4px 6px -1px #0001}
+</style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+<header class="bg-yellow-300 border-b-4 border-red-600 shadow-md">
+  <div class="bg-red-600 text-white text-sm font-semibold py-2 text-center">🚀 ¡Bienvenidos a <strong>Sidmar-Toy</strong>! Jugar, aprender y crecer.</div>
+  <div class="max-w-7xl mx-auto px-4 py-5 flex justify-center items-center gap-3">
+    <div class="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center border-2 border-red-600"><i data-lucide="gamepad-2" class="text-white w-7 h-7"></i></div>
+    <a href="index.html" class="font-title text-3xl font-extrabold text-red-600">Sidmar-Toy</a>
+  </div>
+</header>
+
+    <nav class="bg-white border-b-4 border-brand-red shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-center gap-2 md:gap-4 font-title font-bold">
+        <a href="index.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🏠 Inicio / Catálogo</a>
+        <a href="ofertas.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🎁 Ofertas</a>
+        <a href="nosotros.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🧸 Nosotros</a>
+        <a href="consejos.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">💡 Consejos</a>
+        <a href="contacto.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">📩 Contacto</a>
+      </div>
+    </nav>
+
+<main class="max-w-5xl mx-auto px-4 py-12 flex-1 w-full">
+
+<section class="text-center mb-10">
+  <span class="title-green-bg font-bold">🧸 Nuestra historia</span>
+  <h1 class="text-4xl md:text-5xl font-extrabold mt-5">Conoce Sidmar-Toy</h1>
+  <p class="mt-4 text-lg text-slate-700">Creemos que cada momento de juego puede convertirse en una oportunidad para aprender.</p>
+</section>
+<div class="bg-white rounded-3xl border-4 border-red-600 p-7 md:p-10 shadow-md space-y-6">
+  <section><h2 class="text-2xl font-bold text-green-700">Nuestra misión</h2><p class="mt-2">Ofrecer juguetes que estimulen la creatividad, el aprendizaje, la imaginación y la motricidad de los niños.</p></section>
+  <section><h2 class="text-2xl font-bold text-green-700">Lo que nos inspira</h2><p class="mt-2">Nos inspiran las pequeñas grandes cosas: construir algo nuevo, inventar historias, descubrir sonidos y explorar diferentes texturas.</p></section>
+  <section><h2 class="text-2xl font-bold text-green-700">Nuestra selección</h2><p class="mt-2">En el catálogo encontrarás opciones educativas y didácticas, de imitación, de movimiento, de construcción y de estimulación sensorial.</p></section>
+  <a href="index.html#catalogo" class="inline-block bg-red-600 text-white rounded-xl px-5 py-3 font-bold border-2 border-slate-900">Explorar juguetes</a>
+</div>
+
+</main>
+<footer class="bg-green-600 text-white text-center py-8 border-t-8 border-red-600">
+  <p class="font-title text-2xl font-bold">Sidmar-Toy 🧸</p>
+  <p class="text-yellow-100 text-sm mt-2">Aprender jugando es crecer feliz.</p>
+  <p class="text-xs text-yellow-100 mt-4">© 2026 Sidmar-Toy. Todos los derechos reservados.</p>
+</footer>
+<script>if(window.lucide) lucide.createIcons();</script>
+</body></html>

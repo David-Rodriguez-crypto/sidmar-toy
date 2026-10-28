@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto | Sidmar-Toy</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {theme: {extend: {fontFamily: {fredoka: ['Fredoka','sans-serif'], sans: ['Inter','sans-serif']}, colors: {brand: {bg:'#FEF9C3',red:'#DC2626',green:'#16A34A',greenDark:'#15803D',yellow:'#FACC15'}}}}};
+</script>
+<style>
+body {background:#FEF9C3;font-family:Inter,sans-serif}
+h1,h2,h3,h4,.font-title {font-family:Fredoka,sans-serif}
+.title-green-bg {background:#16A34A;color:white;padding:.5rem 1.25rem;border-radius:1rem;display:inline-block;box-shadow:0 4px 6px -1px #0001}
+</style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+<header class="bg-yellow-300 border-b-4 border-red-600 shadow-md">
+  <div class="bg-red-600 text-white text-sm font-semibold py-2 text-center">🚀 ¡Bienvenidos a <strong>Sidmar-Toy</strong>! Jugar, aprender y crecer.</div>
+  <div class="max-w-7xl mx-auto px-4 py-5 flex justify-center items-center gap-3">
+    <div class="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center border-2 border-red-600"><i data-lucide="gamepad-2" class="text-white w-7 h-7"></i></div>
+    <a href="index.html" class="font-title text-3xl font-extrabold text-red-600">Sidmar-Toy</a>
+  </div>
+</header>
+
+    <nav class="bg-white border-b-4 border-brand-red shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-center gap-2 md:gap-4 font-title font-bold">
+        <a href="index.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🏠 Inicio / Catálogo</a>
+        <a href="ofertas.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🎁 Ofertas</a>
+        <a href="nosotros.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">🧸 Nosotros</a>
+        <a href="consejos.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">💡 Consejos</a>
+        <a href="contacto.html" class="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 border-2 border-brand-red">📩 Contacto</a>
+      </div>
+    </nav>
+
+<main class="max-w-5xl mx-auto px-4 py-12 flex-1 w-full">
+
+<section class="text-center mb-10">
+  <span class="title-green-bg font-bold">📩 Estamos para ayudarte</span>
+  <h1 class="text-4xl md:text-5xl font-extrabold mt-5">Contacta con Sidmar-Toy</h1>
+  <p class="mt-4 text-lg text-slate-700">¿Tienes preguntas sobre un juguete o tu pedido? Escríbenos.</p>
+</section>
+<div class="bg-white rounded-3xl border-4 border-red-600 p-6 md:p-9 shadow-md">
+  <form id="contactForm" class="space-y-5">
+    <div><label for="nombre" class="block font-bold mb-2">Nombre</label><input id="nombre" required class="w-full rounded-xl border-2 border-red-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Tu nombre"></div>
+    <div><label for="correo" class="block font-bold mb-2">Correo electrónico</label><input id="correo" type="email" required class="w-full rounded-xl border-2 border-red-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="tu@correo.com"></div>
+    <div><label for="tema" class="block font-bold mb-2">Motivo de contacto</label><select id="tema" class="w-full rounded-xl border-2 border-red-600 px-4 py-3"><option>Consulta sobre un producto</option><option>Estado de un pedido</option><option>Envíos y promociones</option><option>Otro motivo</option></select></div>
+    <div><label for="mensaje" class="block font-bold mb-2">Mensaje</label><textarea id="mensaje" rows="5" required class="w-full rounded-xl border-2 border-red-600 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Cuéntanos cómo podemos ayudarte..."></textarea></div>
+    <button class="bg-green-600 hover:bg-green-700 text-white font-title font-bold rounded-xl px-6 py-3 border-2 border-red-600" type="submit">Preparar mensaje</button>
+    <p id="formNotice" class="hidden text-green-700 font-semibold" role="status">El formulario está listo, pero esta página de demostración no envía mensajes a un servidor.</p>
+  </form>
+</div>
+<script>document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();document.getElementById('formNotice').classList.remove('hidden');});</script>
+
+</main>
+<footer class="bg-green-600 text-white text-center py-8 border-t-8 border-red-600">
+  <p class="font-title text-2xl font-bold">Sidmar-Toy 🧸</p>
+  <p class="text-yellow-100 text-sm mt-2">Aprender jugando es crecer feliz.</p>
+  <p class="text-xs text-yellow-100 mt-4">© 2026 Sidmar-Toy. Todos los derechos reservados.</p>
+</footer>
+<script>if(window.lucide) lucide.createIcons();</script>
+</body></html>
